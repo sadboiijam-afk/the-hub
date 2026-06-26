@@ -39,6 +39,17 @@
 - Payments must go through regulated PSP/payment partners. No wallet balances, peer-to-peer transfer, card storage, or bank credential storage in this repo.
 - Moderation workflows must preserve report, action, appeal, and audit trails for DSA-aware operations.
 
+## Handoff Documentation
+
+- Keep `docs/handoff/` handoff-ready at all times.
+- Update handoff docs after every major feature, architectural change, schema change, deployment change, or compliance-sensitive change.
+- Required files are `00-project-overview.md` through `20-investor-technical-summary.md`; do not delete or rename them without replacing the handoff structure.
+- Write for a new engineer with no prior conversation context.
+- Separate facts from assumptions and mark incomplete, mocked, or prototype-only behavior clearly.
+- Do not hide legal, security, privacy, compliance, deployment, or validation risks.
+- Include relevant commands, environment variables, deployment targets, test status, known gaps, and next recommended tasks.
+- Mark legal/security/compliance questions that still need expert review.
+
 ## Validation Expectations
 
 - Before finishing code changes, run the lowest-cost relevant validation command and report any command that could not run.

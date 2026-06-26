@@ -8,6 +8,7 @@ For a new engineer or future Codex session:
 - Read `docs/handoff/00-project-overview.md`.
 - Read `docs/handoff/02-current-status.md`.
 - Read `docs/handoff/04-local-development.md`.
+- Confirm `docs/handoff/` still contains files `00-project-overview.md` through `20-investor-technical-summary.md`.
 - Confirm whether the machine can run `pnpm exec node -v`.
 - If Node works, run `pnpm install`.
 - Validate Prisma schema before creating migrations.
@@ -25,3 +26,4 @@ Project-specific reminders:
 - Do not build custom production cryptography.
 - Keep future E2EE possible.
 - Add tests for every domain service.
+- Update handoff docs whenever changing features, architecture, schema, deployment, or compliance-sensitive behavior.
