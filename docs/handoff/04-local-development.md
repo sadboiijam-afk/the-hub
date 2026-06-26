@@ -11,6 +11,12 @@ pnpm typecheck
 pnpm test
 ```
 
+Runtime requirement:
+
+- Use Node.js `>=22.13.0`.
+- Use pnpm `>=11.7.0`.
+- CI and Cloudflare preview workflows use Node.js 22.
+
 Run individual surfaces:
 
 ```bash

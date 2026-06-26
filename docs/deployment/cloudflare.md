@@ -59,6 +59,11 @@ pnpm install --frozen-lockfile
 pnpm --filter @lucid/web build:pages
 ```
 
+CI runtime:
+
+- Node.js 22
+- pnpm 11.7.0
+
 Local Pages preview, only when Wrangler is locally available and no company policy blocks it:
 
 ```bash

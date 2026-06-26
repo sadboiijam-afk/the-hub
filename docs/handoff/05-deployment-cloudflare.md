@@ -34,6 +34,7 @@ Current config:
 
 - `apps/web/wrangler.jsonc`
 - `.github/workflows/cloudflare-pages-preview.yml`
+- GitHub Actions preview build uses Node.js 22.
 
 Latest fix:
 
@@ -42,6 +43,7 @@ Latest fix:
 - The Expo shell now declares `expo-status-bar`, which is required for mobile typecheck.
 - ESLint ignores generated `out/` directories.
 - The preferred Cloudflare Pages build command remains `pnpm --filter @lucid/web build:pages`; root `pnpm run build` is now also expected to pass.
+- GitHub Actions and Cloudflare preview workflows use Node.js 22 to satisfy pnpm 11.7.0 and modern Node built-in modules.
 
 Do not run from a managed work PC:
 
