@@ -21,6 +21,7 @@ Technical risks:
 Recently mitigated:
 
 - Cloudflare deploy command confusion is documented and root Worker helper scripts now exist.
+- Cloudflare production deployment for the Phase 0 web shell has passed a manual smoke test.
 - Cloudflare root build failure caused by missing Node process types in service package boundaries.
 - Mobile typecheck failure caused by undeclared `expo-status-bar`.
 - Lint failures caused by generated Next static export files under `out/`.

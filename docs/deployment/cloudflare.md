@@ -133,6 +133,8 @@ On the current managed work PC, use only project-level commands and avoid global
 - The previous deploy failed because `pnpm cloudflare:deploy:web` called `wrangler pages deploy` for a Pages project while the dashboard project is a Worker.
 - `apps/web/wrangler.jsonc` now uses Workers Static Assets with `assets.directory` set to `./out`.
 - Production deploy uses `wrangler deploy`; preview deploy uses `wrangler deploy --env preview`.
+- Production deployment from commit `bccfd15` succeeded on Cloudflare.
+- Smoke test passed at `https://the-hub.sadboiijam.workers.dev/`; the page title is `LUCID Hub` and the landing shell renders.
 
 ## Production-Readiness Gaps
 
@@ -140,5 +142,5 @@ On the current managed work PC, use only project-level commands and avoid global
 - Admin panel must not be public until access control exists.
 - API, realtime, and worker services are not Cloudflare-runtime-ready.
 - No Cloudflare bindings for R2, KV, Queues, Durable Objects, D1, or Hyperdrive are configured yet.
-- No deployed smoke test is configured.
+- Deployed smoke test is manual only; no automated post-deploy smoke test is configured yet.
 - Prisma schema still needs migration and cascade review before production database use.

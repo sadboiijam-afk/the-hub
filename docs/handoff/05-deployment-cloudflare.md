@@ -44,6 +44,8 @@ Latest fix:
 - `apps/web/wrangler.jsonc` now uses Workers Static Assets with `assets.directory` set to `./out`.
 - Cloudflare dashboard should use build command `pnpm build:web`, deploy command `pnpm cloudflare:deploy:web`, and non-production deploy command `pnpm cloudflare:preview:web`.
 - `pnpm cloudflare:deploy:web` now uses `npx wrangler deploy --config wrangler.jsonc`. Wrangler is not a normal dependency because it pulls in `workerd`, which can require pnpm build approval on managed machines.
+- Production deploy from commit `bccfd15` succeeded on Cloudflare.
+- Manual smoke test passed at `https://the-hub.sadboiijam.workers.dev/`; the deployed page renders the Phase 0 `LUCID Hub` shell.
 - Root `pnpm run build` previously failed on Cloudflare because `services/worker` used `process.env` without explicit Node type configuration.
 - Node type configuration has been added for Node-based services.
 - The Expo shell now declares `expo-status-bar`, which is required for mobile typecheck.
@@ -65,5 +67,5 @@ Production-readiness gaps:
 - No access control for admin panel.
 - No Cloudflare secrets plan.
 - Preview deployment workflow exists, but needs Cloudflare repository secrets before it can deploy from GitHub Actions.
-- No deployed smoke tests.
+- Deployed smoke test is manual only; no automated post-deploy smoke test exists yet.
 - No runtime compatibility audit for NestJS, Next.js, Prisma, or WebSocket behavior on Cloudflare.
