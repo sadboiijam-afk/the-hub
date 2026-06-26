@@ -13,7 +13,7 @@ Completed in Phase 0:
 - GitHub Actions validation workflow.
 - Product, compliance, security, architecture, and handoff docs.
 - Smoke test files for selected packages and services.
-- Cloudflare Pages preview configuration for the public web shell.
+- Cloudflare Workers Static Assets configuration for the public web shell.
 
 Not completed:
 
@@ -31,7 +31,7 @@ Known environment blocker:
 
 Latest build status:
 
-- Latest Cloudflare failure is deploy-only: build succeeds, but dashboard deploy command `npx wrangler deploy` targets Workers from the monorepo root. The repo now documents and exposes Pages-specific deploy scripts for `apps/web/out`.
+- Latest Cloudflare failure was deploy-only: build succeeded, but the deploy script targeted Cloudflare Pages while the dashboard project is a Worker named `the-hub`. The repo now deploys `apps/web/out` through Workers Static Assets.
 - GitHub Actions and Cloudflare preview workflows now use Node.js 22 to satisfy pnpm 11.7.0 and modern Node built-in module requirements.
 - Cloudflare build failure from `services/worker` missing Node process types has been fixed.
 - Prisma schema validation now passes with a local placeholder datasource URL when `DATABASE_URL` is not set.

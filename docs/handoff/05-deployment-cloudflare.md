@@ -4,7 +4,7 @@ Initial Cloudflare deployment support now exists for the public web shell. See `
 
 Deployment targets:
 
-- `apps/web`: Cloudflare Pages static preview using `apps/web/out`.
+- `apps/web`: Cloudflare Worker named `the-hub` serving static assets from `apps/web/out`.
 - `apps/admin`: do not deploy publicly until access control is designed and implemented.
 - `services/api`: candidate for Cloudflare Workers only after Node.js runtime compatibility and database access strategy are reviewed.
 - `services/realtime`: candidate for Workers plus Durable Objects for stateful coordination, but not until realtime requirements are implemented.
@@ -12,8 +12,8 @@ Deployment targets:
 
 Cloudflare products under consideration:
 
-- Workers for APIs, full-stack apps, and worker jobs.
-- Pages for static web surfaces.
+- Workers for the Phase 0 public web shell through Workers Static Assets, and later for APIs/full-stack services after runtime review.
+- Pages remains an alternative for static web surfaces if a separate Pages project is deliberately created.
 - Durable Objects for stateful realtime coordination.
 - R2 for future object storage.
 - Queues for async jobs.
@@ -33,15 +33,17 @@ Required before adding Cloudflare config:
 Current config:
 
 - `apps/web/wrangler.jsonc`
-- `.github/workflows/cloudflare-pages-preview.yml`
+- `.github/workflows/cloudflare-workers-preview.yml`
 - GitHub Actions preview build uses Node.js 22.
 - Root helper scripts: `pnpm build:web`, `pnpm cloudflare:preview:web`, and `pnpm cloudflare:deploy:web`.
 
 Latest fix:
 
-- Cloudflare deploy failure after a successful build was caused by running `npx wrangler deploy` from the monorepo root. That is a Workers deploy command and should not be used for the Phase 0 Pages target.
-- Cloudflare dashboard should use Pages Git integration with build output `apps/web/out`, or custom deploy command `pnpm cloudflare:deploy:web`.
-- `pnpm cloudflare:deploy:web` uses `npx wrangler pages deploy` intentionally. Wrangler is not a normal dependency because it pulls in `workerd`, which can require pnpm build approval on managed machines.
+- Cloudflare build now succeeds with `pnpm build:web`.
+- The latest deploy failure was caused by a target mismatch: the Cloudflare dashboard project is a Worker named `the-hub`, but the repo deploy script tried `wrangler pages deploy` against a Pages project name.
+- `apps/web/wrangler.jsonc` now uses Workers Static Assets with `assets.directory` set to `./out`.
+- Cloudflare dashboard should use build command `pnpm build:web`, deploy command `pnpm cloudflare:deploy:web`, and non-production deploy command `pnpm cloudflare:preview:web`.
+- `pnpm cloudflare:deploy:web` now uses `npx wrangler deploy --config wrangler.jsonc`. Wrangler is not a normal dependency because it pulls in `workerd`, which can require pnpm build approval on managed machines.
 - Root `pnpm run build` previously failed on Cloudflare because `services/worker` used `process.env` without explicit Node type configuration.
 - Node type configuration has been added for Node-based services.
 - The Expo shell now declares `expo-status-bar`, which is required for mobile typecheck.
@@ -53,7 +55,7 @@ Do not run from a managed work PC:
 
 - `wrangler login`
 - deployment commands unless already authenticated and explicitly approved
-- `npx wrangler deploy` for this project; it targets Workers, not the current Pages deployment
+- `npx wrangler pages deploy` for the active Worker project
 - token setup
 - global installs
 - Docker daemon changes
@@ -62,6 +64,6 @@ Production-readiness gaps:
 
 - No access control for admin panel.
 - No Cloudflare secrets plan.
-- No preview deployment workflow.
+- Preview deployment workflow exists, but needs Cloudflare repository secrets before it can deploy from GitHub Actions.
 - No deployed smoke tests.
 - No runtime compatibility audit for NestJS, Next.js, Prisma, or WebSocket behavior on Cloudflare.

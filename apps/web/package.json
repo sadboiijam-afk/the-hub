@@ -6,8 +6,9 @@
   "scripts": {
     "build": "next build",
     "build:pages": "next build",
-    "cloudflare:preview": "npx wrangler pages dev ./out --config wrangler.jsonc",
-    "cloudflare:deploy": "npx wrangler pages deploy ./out --project-name lucid-hub-web",
+    "cloudflare:dev": "npx wrangler dev --config wrangler.jsonc --env local",
+    "cloudflare:preview": "npx wrangler deploy --config wrangler.jsonc --env preview",
+    "cloudflare:deploy": "npx wrangler deploy --config wrangler.jsonc",
     "dev": "next dev --port 3000",
     "lint": "eslint . --max-warnings=0",
     "typecheck": "tsc --noEmit"

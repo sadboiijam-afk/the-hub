@@ -1,11 +1,11 @@
-name: Cloudflare Pages Preview
+name: Cloudflare Workers Preview
 
 on:
   pull_request:
     branches:
       - main
     paths:
-      - ".github/workflows/cloudflare-pages-preview.yml"
+      - ".github/workflows/cloudflare-workers-preview.yml"
       - "apps/web/**"
       - "packages/**"
       - "package.json"
@@ -20,7 +20,7 @@ permissions:
 
 jobs:
   web-preview:
-    name: Build and optionally deploy web preview
+    name: Build and optionally deploy web worker preview
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -43,20 +43,19 @@ jobs:
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          CLOUDFLARE_PAGES_PROJECT_NAME: ${{ vars.CLOUDFLARE_PAGES_PROJECT_NAME }}
         run: |
-          if [ -n "$CLOUDFLARE_API_TOKEN" ] && [ -n "$CLOUDFLARE_ACCOUNT_ID" ] && [ -n "$CLOUDFLARE_PAGES_PROJECT_NAME" ]; then
+          if [ -n "$CLOUDFLARE_API_TOKEN" ] && [ -n "$CLOUDFLARE_ACCOUNT_ID" ]; then
             echo "enabled=true" >> "$GITHUB_OUTPUT"
           else
-            echo "::notice::Cloudflare Pages deploy skipped. Add CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID secrets plus CLOUDFLARE_PAGES_PROJECT_NAME repository variable to enable previews."
+            echo "::notice::Cloudflare Workers preview deploy skipped. Add CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID repository secrets to enable previews."
             echo "enabled=false" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Deploy Cloudflare Pages preview
+      - name: Deploy Cloudflare Workers preview
         if: steps.cloudflare_config.outputs.enabled == 'true'
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy apps/web/out --project-name=${{ vars.CLOUDFLARE_PAGES_PROJECT_NAME }} --branch=${{ github.head_ref || github.ref_name }}
+          command: deploy --config apps/web/wrangler.jsonc --env preview
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}

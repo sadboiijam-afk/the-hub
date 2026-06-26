@@ -1,14 +1,28 @@
 {
-  "name": "lucid-hub-web",
+  "name": "the-hub",
   "compatibility_date": "2026-06-26",
-  "pages_build_output_dir": "./out",
+  "assets": {
+    "directory": "./out",
+    "not_found_handling": "404-page",
+    "html_handling": "auto-trailing-slash"
+  },
   "vars": {
-    "APP_ENV": "local"
+    "APP_ENV": "production"
   },
   "env": {
+    "local": {
+      "vars": {
+        "APP_ENV": "local"
+      }
+    },
     "preview": {
       "vars": {
         "APP_ENV": "preview"
+      }
+    },
+    "staging": {
+      "vars": {
+        "APP_ENV": "staging"
       }
     },
     "production": {
