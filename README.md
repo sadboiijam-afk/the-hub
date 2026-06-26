@@ -40,6 +40,10 @@ pnpm --filter @lucid/mobile start
 
 On managed work PCs, do not bypass blocked dependency build scripts or missing system runtimes. See `docs/development/local-validation.md` for the low-impact validation path.
 
+## Handoff
+
+Start here when continuing from another machine: `docs/handoff/README.md`.
+
 ## Phase 0 Scope
 
 This pass includes repository scaffold, configuration, CI, Docker Compose, documentation, a Prisma schema skeleton, and compile/test smoke coverage. It intentionally does not implement chat, payments, mini-app runtime, wallet behavior, or production authentication.
