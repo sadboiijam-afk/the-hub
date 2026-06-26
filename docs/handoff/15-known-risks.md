@@ -17,6 +17,12 @@ Technical risks:
 - Mini-app runtime is not designed yet.
 - Cloudflare runtime compatibility is unknown.
 
+Recently mitigated:
+
+- Cloudflare root build failure caused by missing Node process types in service package boundaries.
+- Mobile typecheck failure caused by undeclared `expo-status-bar`.
+- Lint failures caused by generated Next static export files under `out/`.
+
 Product/compliance risks:
 
 - GDPR retention, deletion, and export workflows are not implemented.

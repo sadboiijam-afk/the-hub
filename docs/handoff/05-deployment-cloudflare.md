@@ -35,6 +35,14 @@ Current config:
 - `apps/web/wrangler.jsonc`
 - `.github/workflows/cloudflare-pages-preview.yml`
 
+Latest fix:
+
+- Root `pnpm run build` previously failed on Cloudflare because `services/worker` used `process.env` without explicit Node type configuration.
+- Node type configuration has been added for Node-based services.
+- The Expo shell now declares `expo-status-bar`, which is required for mobile typecheck.
+- ESLint ignores generated `out/` directories.
+- The preferred Cloudflare Pages build command remains `pnpm --filter @lucid/web build:pages`; root `pnpm run build` is now also expected to pass.
+
 Do not run from a managed work PC:
 
 - `wrangler login`

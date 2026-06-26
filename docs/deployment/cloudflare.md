@@ -106,7 +106,21 @@ pnpm test
 pnpm --filter @lucid/web build:pages
 ```
 
+Cloudflare Pages may run the repository root build command if the dashboard is configured with `pnpm run build`. The root build is expected to pass, but the preferred Pages build command is narrower:
+
+```bash
+pnpm --filter @lucid/web build:pages
+```
+
 On the current managed work PC, package scripts are blocked because `node` is not discoverable through pnpm. Do not bypass this with global installs, broad build approvals, Docker daemon changes, or login flows.
+
+Latest fix:
+
+- Cloudflare build failure on `services/worker` was caused by missing explicit Node type configuration for service packages using `process.env`.
+- `services/api`, `services/realtime`, and `services/worker` now declare Node types in their package/tsconfig boundaries as needed.
+- `apps/mobile` now declares the `expo-status-bar` dependency used by its Expo shell.
+- ESLint ignores generated `out/` directories so static export artifacts are not linted.
+- Verified locally with the bundled Codex Node runtime: `pnpm --filter @lucid/worker build`, `pnpm run build`, `pnpm typecheck`, `pnpm test`, and `pnpm lint`.
 
 ## Production-Readiness Gaps
 

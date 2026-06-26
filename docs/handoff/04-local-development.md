@@ -43,6 +43,7 @@ pnpm test
 Current local blocker:
 
 - `pnpm exec node -v` fails because `node` is not discoverable by pnpm on this machine.
-- Because of that, `pnpm typecheck` and `pnpm test` do not currently exercise the code.
+- Direct `pnpm typecheck` and `pnpm test` fail without a Node runtime on PATH.
+- With the bundled Codex Node runtime temporarily prepended to PATH for the command, `pnpm run build`, `pnpm typecheck`, `pnpm test`, and `pnpm lint` have passed.
 
 See `docs/development/local-validation.md` for the managed-PC validation policy.

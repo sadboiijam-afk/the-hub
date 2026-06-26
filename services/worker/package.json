@@ -13,6 +13,7 @@
     "@lucid/config": "workspace:*"
   },
   "devDependencies": {
+    "@types/node": "latest",
     "typescript": "latest",
     "vitest": "latest"
   }

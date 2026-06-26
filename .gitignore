@@ -2,12 +2,14 @@ node_modules/
 .codex/
 .pnpm-store/
 .next/
+out/
 .wrangler/
 .dev.vars
 .dev.vars.*
 dist/
 build/
 coverage/
+*.tsbuildinfo
 .env
 .env.*
 !.env.example

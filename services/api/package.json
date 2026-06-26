@@ -21,6 +21,7 @@
     "rxjs": "latest"
   },
   "devDependencies": {
+    "@types/node": "latest",
     "typescript": "latest",
     "vitest": "latest"
   }
