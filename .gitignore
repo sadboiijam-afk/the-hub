@@ -1,0 +1,16 @@
+node_modules/
+.codex/
+.pnpm-store/
+.next/
+.wrangler/
+.dev.vars
+.dev.vars.*
+dist/
+build/
+coverage/
+.env
+.env.*
+!.env.example
+*.local
+*.log
+generated/

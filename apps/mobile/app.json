@@ -1,0 +1,11 @@
+{
+  "expo": {
+    "name": "LUCID Hub",
+    "slug": "lucid-hub",
+    "version": "0.0.0",
+    "orientation": "portrait",
+    "scheme": "lucidhub",
+    "userInterfaceStyle": "light",
+    "assetBundlePatterns": ["**/*"]
+  }
+}

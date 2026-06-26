@@ -1,0 +1,694 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum VerificationStatus {
+  pending
+  approved
+  rejected
+  suspended
+}
+
+enum ReportStatus {
+  open
+  under_review
+  actioned
+  rejected
+  appealed
+  closed
+}
+
+enum ModerationTargetType {
+  user
+  message
+  community
+  channel_post
+  merchant
+  mini_app
+}
+
+enum MiniAppReviewStatus {
+  draft
+  submitted
+  approved
+  rejected
+  suspended
+}
+
+enum PaymentIntentStatus {
+  requires_provider_action
+  processing
+  succeeded
+  cancelled
+  failed
+  refunded
+}
+
+enum OrderStatus {
+  draft
+  pending
+  confirmed
+  cancelled
+  fulfilled
+}
+
+model User {
+  id             String   @id @default(uuid()) @db.Uuid
+  displayName    String?
+  emailHash      String?  @unique
+  phoneHash      String?  @unique
+  locale         String   @default("en")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  deactivatedAt  DateTime?
+
+  @@map("users")
+}
+
+model Device {
+  id             String   @id @default(uuid()) @db.Uuid
+  userId         String   @db.Uuid
+  deviceLabel    String?
+  platform       String
+  pushCapable    Boolean  @default(false)
+  lastSeenAt     DateTime?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([userId])
+  @@map("devices")
+}
+
+model Session {
+  id             String   @id @default(uuid()) @db.Uuid
+  userId         String   @db.Uuid
+  deviceId       String?  @db.Uuid
+  tokenHash      String   @unique
+  expiresAt      DateTime
+  revokedAt      DateTime?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([userId])
+  @@map("sessions")
+}
+
+model UserPrivacySetting {
+  id                       String   @id @default(uuid()) @db.Uuid
+  userId                   String   @unique @db.Uuid
+  discoverableByPhone      Boolean  @default(false)
+  discoverableByEmail      Boolean  @default(false)
+  allowPersonalizedFeed    Boolean  @default(false)
+  allowBusinessMessages    Boolean  @default(true)
+  createdAt                DateTime @default(now())
+  updatedAt                DateTime @updatedAt
+
+  @@map("user_privacy_settings")
+}
+
+model Consent {
+  id              String   @id @default(uuid()) @db.Uuid
+  userId          String   @db.Uuid
+  consentKey      String
+  policyVersion   String
+  granted         Boolean
+  lawfulBasis     String
+  recordedAt      DateTime @default(now())
+  metadata        Json?
+
+  @@index([userId, consentKey])
+  @@map("consents")
+}
+
+model DataExportRequest {
+  id             String   @id @default(uuid()) @db.Uuid
+  userId         String   @db.Uuid
+  status         String   @default("requested")
+  requestedAt    DateTime @default(now())
+  completedAt    DateTime?
+  downloadUrl    String?
+
+  @@index([userId])
+  @@map("data_export_requests")
+}
+
+model DeletionRequest {
+  id             String   @id @default(uuid()) @db.Uuid
+  userId         String   @db.Uuid
+  status         String   @default("requested")
+  reason         String?
+  requestedAt    DateTime @default(now())
+  completedAt    DateTime?
+
+  @@index([userId])
+  @@map("deletion_requests")
+}
+
+model Contact {
+  id             String   @id @default(uuid()) @db.Uuid
+  ownerUserId    String   @db.Uuid
+  contactUserId  String   @db.Uuid
+  createdAt      DateTime @default(now())
+
+  @@unique([ownerUserId, contactUserId])
+  @@map("contacts")
+}
+
+model Block {
+  id             String   @id @default(uuid()) @db.Uuid
+  blockerUserId  String   @db.Uuid
+  blockedUserId  String   @db.Uuid
+  reason         String?
+  createdAt      DateTime @default(now())
+
+  @@unique([blockerUserId, blockedUserId])
+  @@map("blocks")
+}
+
+model FriendRequest {
+  id              String   @id @default(uuid()) @db.Uuid
+  requesterUserId String   @db.Uuid
+  recipientUserId String   @db.Uuid
+  status          String   @default("pending")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([recipientUserId, status])
+  @@map("friend_requests")
+}
+
+model Conversation {
+  id             String   @id @default(uuid()) @db.Uuid
+  type           String
+  title          String?
+  createdById    String?  @db.Uuid
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@map("conversations")
+}
+
+model ConversationParticipant {
+  id             String   @id @default(uuid()) @db.Uuid
+  conversationId String   @db.Uuid
+  userId         String   @db.Uuid
+  role           String   @default("member")
+  joinedAt       DateTime @default(now())
+  leftAt         DateTime?
+
+  @@unique([conversationId, userId])
+  @@map("conversation_participants")
+}
+
+model Message {
+  id             String   @id @default(uuid()) @db.Uuid
+  conversationId String   @db.Uuid
+  senderUserId   String   @db.Uuid
+  bodyRef        String?
+  encryptionMode String   @default("server_readable_placeholder")
+  replyToId      String?  @db.Uuid
+  sentAt         DateTime @default(now())
+  editedAt       DateTime?
+  deletedAt      DateTime?
+
+  @@index([conversationId, sentAt])
+  @@map("messages")
+}
+
+model MessageAttachment {
+  id             String   @id @default(uuid()) @db.Uuid
+  messageId      String   @db.Uuid
+  storageKey     String
+  mimeType       String
+  byteSize       Int
+  createdAt      DateTime @default(now())
+
+  @@index([messageId])
+  @@map("message_attachments")
+}
+
+model MessageReceipt {
+  id             String   @id @default(uuid()) @db.Uuid
+  messageId      String   @db.Uuid
+  userId         String   @db.Uuid
+  receiptType    String
+  recordedAt     DateTime @default(now())
+
+  @@unique([messageId, userId, receiptType])
+  @@map("message_receipts")
+}
+
+model MessageReport {
+  id             String       @id @default(uuid()) @db.Uuid
+  messageId      String       @db.Uuid
+  reporterUserId String       @db.Uuid
+  category       String
+  status         ReportStatus @default(open)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@index([status])
+  @@map("message_reports")
+}
+
+model Community {
+  id             String   @id @default(uuid()) @db.Uuid
+  ownerUserId    String   @db.Uuid
+  name           String
+  visibility     String   @default("private")
+  description    String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@map("communities")
+}
+
+model CommunityMember {
+  id             String   @id @default(uuid()) @db.Uuid
+  communityId    String   @db.Uuid
+  userId         String   @db.Uuid
+  roleKey        String   @default("member")
+  joinedAt       DateTime @default(now())
+
+  @@unique([communityId, userId])
+  @@map("community_members")
+}
+
+model CommunityRole {
+  id             String   @id @default(uuid()) @db.Uuid
+  communityId    String   @db.Uuid
+  roleKey        String
+  permissions    Json
+  createdAt      DateTime @default(now())
+
+  @@unique([communityId, roleKey])
+  @@map("community_roles")
+}
+
+model CommunityInvite {
+  id             String   @id @default(uuid()) @db.Uuid
+  communityId    String   @db.Uuid
+  createdById    String   @db.Uuid
+  tokenHash      String   @unique
+  expiresAt      DateTime?
+  maxUses        Int?
+  usedCount      Int      @default(0)
+  createdAt      DateTime @default(now())
+
+  @@map("community_invites")
+}
+
+model CommunityRule {
+  id             String   @id @default(uuid()) @db.Uuid
+  communityId    String   @db.Uuid
+  title          String
+  body           String
+  position       Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@map("community_rules")
+}
+
+model ModerationAction {
+  id             String               @id @default(uuid()) @db.Uuid
+  actorUserId    String               @db.Uuid
+  targetType     ModerationTargetType
+  targetId       String               @db.Uuid
+  actionType     String
+  reason         String
+  startsAt       DateTime             @default(now())
+  endsAt         DateTime?
+  createdAt      DateTime             @default(now())
+
+  @@index([targetType, targetId])
+  @@map("moderation_actions")
+}
+
+model Appeal {
+  id             String   @id @default(uuid()) @db.Uuid
+  moderationActionId String? @db.Uuid
+  appellantUserId String @db.Uuid
+  status         String   @default("submitted")
+  bodyRef        String?
+  decision       String?
+  reviewedById   String?  @db.Uuid
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([status])
+  @@map("appeals")
+}
+
+model Channel {
+  id             String   @id @default(uuid()) @db.Uuid
+  ownerUserId    String?  @db.Uuid
+  merchantId     String?  @db.Uuid
+  name           String
+  description    String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@map("channels")
+}
+
+model ChannelPost {
+  id             String   @id @default(uuid()) @db.Uuid
+  channelId      String   @db.Uuid
+  authorUserId   String   @db.Uuid
+  title          String?
+  bodyRef        String
+  publishedAt    DateTime?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([channelId, publishedAt])
+  @@map("channel_posts")
+}
+
+model PostReaction {
+  id             String   @id @default(uuid()) @db.Uuid
+  postId         String   @db.Uuid
+  userId         String   @db.Uuid
+  reaction       String
+  createdAt      DateTime @default(now())
+
+  @@unique([postId, userId, reaction])
+  @@map("post_reactions")
+}
+
+model PostComment {
+  id             String   @id @default(uuid()) @db.Uuid
+  postId         String   @db.Uuid
+  authorUserId   String   @db.Uuid
+  bodyRef        String
+  createdAt      DateTime @default(now())
+  deletedAt      DateTime?
+
+  @@index([postId, createdAt])
+  @@map("post_comments")
+}
+
+model Merchant {
+  id             String             @id @default(uuid()) @db.Uuid
+  ownerUserId    String             @db.Uuid
+  displayName    String
+  slug           String             @unique
+  verificationStatus VerificationStatus @default(pending)
+  description    String?
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+
+  @@map("merchants")
+}
+
+model MerchantVerification {
+  id             String             @id @default(uuid()) @db.Uuid
+  merchantId     String             @db.Uuid
+  status         VerificationStatus @default(pending)
+  evidenceRef    String?
+  reviewerUserId String?            @db.Uuid
+  decisionReason String?
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+
+  @@index([merchantId, status])
+  @@map("merchant_verifications")
+}
+
+model MerchantService {
+  id             String   @id @default(uuid()) @db.Uuid
+  merchantId     String   @db.Uuid
+  name           String
+  description    String?
+  durationMinutes Int?
+  priceMinor     Int?
+  currency       String?
+  active         Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([merchantId])
+  @@map("merchant_services")
+}
+
+model AvailabilitySlot {
+  id             String   @id @default(uuid()) @db.Uuid
+  merchantId     String   @db.Uuid
+  serviceId      String?  @db.Uuid
+  startsAt       DateTime
+  endsAt         DateTime
+  capacity       Int      @default(1)
+  createdAt      DateTime @default(now())
+
+  @@index([merchantId, startsAt])
+  @@map("availability_slots")
+}
+
+model Booking {
+  id             String   @id @default(uuid()) @db.Uuid
+  merchantId     String   @db.Uuid
+  serviceId      String?  @db.Uuid
+  customerUserId String   @db.Uuid
+  status         String   @default("requested")
+  startsAt       DateTime
+  endsAt         DateTime
+  cancellationRuleRef String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([merchantId, startsAt])
+  @@map("bookings")
+}
+
+model Coupon {
+  id             String   @id @default(uuid()) @db.Uuid
+  merchantId     String   @db.Uuid
+  codeHash       String
+  title          String
+  discount       Json
+  startsAt       DateTime?
+  endsAt         DateTime?
+  active         Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([merchantId, active])
+  @@map("coupons")
+}
+
+model LoyaltyCard {
+  id             String   @id @default(uuid()) @db.Uuid
+  merchantId     String   @db.Uuid
+  userId         String   @db.Uuid
+  points         Int      @default(0)
+  tier           String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@unique([merchantId, userId])
+  @@map("loyalty_cards")
+}
+
+model MiniApp {
+  id             String              @id @default(uuid()) @db.Uuid
+  ownerUserId    String              @db.Uuid
+  merchantId     String?             @db.Uuid
+  name           String
+  slug           String              @unique
+  reviewStatus   MiniAppReviewStatus @default(draft)
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+
+  @@map("mini_apps")
+}
+
+model MiniAppManifest {
+  id             String   @id @default(uuid()) @db.Uuid
+  miniAppId      String   @db.Uuid
+  version        String
+  entryUrl       String
+  manifestJson   Json
+  createdAt      DateTime @default(now())
+
+  @@unique([miniAppId, version])
+  @@map("mini_app_manifests")
+}
+
+model MiniAppPermission {
+  id             String   @id @default(uuid()) @db.Uuid
+  miniAppId      String   @db.Uuid
+  permissionKey  String
+  purpose        String
+  createdAt      DateTime @default(now())
+
+  @@unique([miniAppId, permissionKey])
+  @@map("mini_app_permissions")
+}
+
+model MiniAppReview {
+  id             String              @id @default(uuid()) @db.Uuid
+  miniAppId      String              @db.Uuid
+  reviewerUserId String?             @db.Uuid
+  status         MiniAppReviewStatus @default(submitted)
+  notesRef       String?
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+
+  @@index([status])
+  @@map("mini_app_reviews")
+}
+
+model MiniAppLaunch {
+  id             String   @id @default(uuid()) @db.Uuid
+  miniAppId      String   @db.Uuid
+  userId         String   @db.Uuid
+  launchTokenHash String
+  expiresAt      DateTime
+  createdAt      DateTime @default(now())
+
+  @@index([miniAppId, userId])
+  @@map("mini_app_launches")
+}
+
+model MiniAppWebhookEvent {
+  id             String   @id @default(uuid()) @db.Uuid
+  miniAppId      String   @db.Uuid
+  eventType      String
+  payloadRef     String
+  signatureHash  String?
+  receivedAt     DateTime @default(now())
+  processedAt    DateTime?
+
+  @@index([miniAppId, eventType])
+  @@map("mini_app_webhook_events")
+}
+
+model Order {
+  id             String      @id @default(uuid()) @db.Uuid
+  merchantId     String      @db.Uuid
+  customerUserId String      @db.Uuid
+  status         OrderStatus @default(draft)
+  currency       String
+  totalMinor     Int
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+
+  @@index([merchantId, status])
+  @@map("orders")
+}
+
+model PaymentIntent {
+  id             String              @id @default(uuid()) @db.Uuid
+  orderId        String?             @db.Uuid
+  provider       String
+  providerIntentRef String?
+  status         PaymentIntentStatus @default(requires_provider_action)
+  currency       String
+  amountMinor    Int
+  idempotencyKey String              @unique
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+
+  @@index([provider, status])
+  @@map("payment_intents")
+}
+
+model Refund {
+  id             String   @id @default(uuid()) @db.Uuid
+  paymentIntentId String  @db.Uuid
+  providerRefundRef String?
+  amountMinor    Int
+  currency       String
+  status         String   @default("requested")
+  reason         String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([paymentIntentId])
+  @@map("refunds")
+}
+
+model ProviderWebhookEvent {
+  id             String   @id @default(uuid()) @db.Uuid
+  provider       String
+  providerEventRef String
+  eventType      String
+  payloadRef     String
+  signatureHash  String?
+  receivedAt     DateTime @default(now())
+  processedAt    DateTime?
+
+  @@unique([provider, providerEventRef])
+  @@map("provider_webhook_events")
+}
+
+model Notification {
+  id             String   @id @default(uuid()) @db.Uuid
+  userId         String   @db.Uuid
+  category       String
+  title          String
+  body           String
+  status         String   @default("queued")
+  createdAt      DateTime @default(now())
+  sentAt         DateTime?
+
+  @@index([userId, status])
+  @@map("notifications")
+}
+
+model PushToken {
+  id             String   @id @default(uuid()) @db.Uuid
+  userId         String   @db.Uuid
+  deviceId       String?  @db.Uuid
+  tokenHash      String   @unique
+  provider       String
+  active         Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([userId])
+  @@map("push_tokens")
+}
+
+model NotificationPreference {
+  id             String   @id @default(uuid()) @db.Uuid
+  userId         String   @db.Uuid
+  category       String
+  enabled        Boolean  @default(true)
+  updatedAt      DateTime @updatedAt
+
+  @@unique([userId, category])
+  @@map("notification_preferences")
+}
+
+model AuditLog {
+  id             String   @id @default(uuid()) @db.Uuid
+  actorUserId    String?  @db.Uuid
+  action         String
+  targetType     String
+  targetId       String?
+  requestId      String?
+  metadata       Json?
+  createdAt      DateTime @default(now())
+
+  @@index([action, createdAt])
+  @@map("audit_logs")
+}
+
+model FeatureFlag {
+  id             String   @id @default(uuid()) @db.Uuid
+  key            String   @unique
+  enabled        Boolean  @default(false)
+  description    String?
+  updatedById    String?  @db.Uuid
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@map("feature_flags")
+}

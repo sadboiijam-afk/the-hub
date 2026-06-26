@@ -1,0 +1,118 @@
+# Cloudflare Deployment
+
+## Deployment Target
+
+Phase 0 deploys only the public web shell:
+
+- Target: `apps/web`
+- Cloudflare product: Pages
+- Build output: `apps/web/out`
+- Config: `apps/web/wrangler.jsonc`
+
+The admin panel is intentionally excluded until authentication, authorization, audit logging, and access-control review are complete.
+
+## Cloudflare Products Used
+
+- Cloudflare Pages for the public web shell.
+- Wrangler Action in GitHub Actions for optional preview deployment.
+
+Reserved for later phases:
+
+- Workers for APIs and worker jobs after runtime compatibility review.
+- Durable Objects for stateful realtime coordination.
+- R2 for object storage.
+- Queues for async jobs.
+- KV for low-frequency config/cache only.
+- Hyperdrive for Postgres access from Workers.
+- D1 for prototypes only, not as the default production database.
+
+## Environments
+
+Cloudflare Pages supports `preview` and `production` environment overrides in Wrangler config. Local and staging are handled as operational conventions:
+
+- Local: `wrangler pages dev ./out --config wrangler.jsonc` from `apps/web` after a local static build.
+- Preview: pull requests and non-production branches.
+- Staging: use a dedicated `staging` branch as a Pages preview, or create a separate Pages project if staging needs isolated bindings.
+- Production: `main` branch after release approval.
+
+Do not commit real account IDs, tokens, API keys, `.env` files, `.dev.vars`, or production credentials.
+
+## Required GitHub Secrets And Variables
+
+Repository secrets:
+
+- `CLOUDFLARE_API_TOKEN`: Cloudflare API token with Cloudflare Pages edit permission for the target account.
+- `CLOUDFLARE_ACCOUNT_ID`: Cloudflare account ID.
+
+Repository variable:
+
+- `CLOUDFLARE_PAGES_PROJECT_NAME`: Pages project name, for example `lucid-hub-web`.
+
+The preview workflow skips deployment when these values are missing, but still builds the web app.
+
+## Commands To Run
+
+Normal CI path:
+
+```bash
+pnpm install --frozen-lockfile
+pnpm --filter @lucid/web build:pages
+```
+
+Local Pages preview, only when Wrangler is locally available and no company policy blocks it:
+
+```bash
+cd apps/web
+pnpm build:pages
+wrangler pages dev ./out --config wrangler.jsonc
+```
+
+Manual deploy, only when already authenticated and approved:
+
+```bash
+cd apps/web
+wrangler pages deploy ./out --project-name lucid-hub-web
+```
+
+## Preview Deployment Steps
+
+Preferred path:
+
+1. Push a branch to GitHub.
+2. Open a pull request into `main`.
+3. GitHub Actions runs `Cloudflare Pages Preview`.
+4. The workflow builds `apps/web`.
+5. If Cloudflare secrets and variables exist, Wrangler deploys a Pages preview for the PR branch.
+
+Alternative path:
+
+- Configure Cloudflare Pages Git integration in the Cloudflare dashboard for `sadboiijam-afk/the-hub`.
+- Use root directory `/`.
+- Use build command `pnpm install --frozen-lockfile && pnpm --filter @lucid/web build:pages`.
+- Use build output directory `apps/web/out`.
+- Set production branch to `main`.
+
+Cloudflare's Git integration creates preview deployments for custom branches and pull requests. Cloudflare documents that Git integration cannot later be switched to Direct Upload for the same Pages project, so choose the deployment model deliberately.
+
+## Local Testing Steps
+
+On a normal Node-enabled machine:
+
+```bash
+pnpm install
+pnpm lint
+pnpm typecheck
+pnpm test
+pnpm --filter @lucid/web build:pages
+```
+
+On the current managed work PC, package scripts are blocked because `node` is not discoverable through pnpm. Do not bypass this with global installs, broad build approvals, Docker daemon changes, or login flows.
+
+## Production-Readiness Gaps
+
+- Web app is a Phase 0 shell only.
+- Admin panel must not be public until access control exists.
+- API, realtime, and worker services are not Cloudflare-runtime-ready.
+- No Cloudflare bindings for R2, KV, Queues, Durable Objects, D1, or Hyperdrive are configured yet.
+- No deployed smoke test is configured because deployment credentials are not present in the repo.
+- Prisma schema still needs validation on a normal development or CI environment.

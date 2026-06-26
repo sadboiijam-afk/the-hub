@@ -1,0 +1,28 @@
+{
+  "name": "@lucid/web",
+  "private": true,
+  "type": "module",
+  "version": "0.0.0",
+  "scripts": {
+    "build": "next build",
+    "build:pages": "next build",
+    "cloudflare:preview": "wrangler pages dev ./out --config wrangler.jsonc",
+    "cloudflare:deploy": "wrangler pages deploy ./out --project-name lucid-hub-web",
+    "dev": "next dev --port 3000",
+    "lint": "eslint . --max-warnings=0",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@lucid/config": "workspace:*",
+    "@lucid/shared-types": "workspace:*",
+    "@lucid/ui": "workspace:*",
+    "next": "latest",
+    "react": "latest",
+    "react-dom": "latest"
+  },
+  "devDependencies": {
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "typescript": "latest"
+  }
+}
