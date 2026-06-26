@@ -11,6 +11,9 @@
   },
   "scripts": {
     "build": "pnpm -r --if-present build",
+    "build:web": "pnpm --filter @lucid/web build:pages",
+    "cloudflare:deploy:web": "pnpm --filter @lucid/web cloudflare:deploy",
+    "cloudflare:preview:web": "pnpm --filter @lucid/web cloudflare:preview",
     "dev": "pnpm -r --parallel --if-present dev",
     "lint": "eslint . --max-warnings=0",
     "test": "pnpm -r --if-present test",

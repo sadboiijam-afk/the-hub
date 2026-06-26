@@ -64,6 +64,34 @@ CI runtime:
 - Node.js 22
 - pnpm 11.7.0
 
+## Cloudflare Dashboard Settings
+
+Use a Cloudflare Pages project for Phase 0 web preview/staging. Do not use a Workers project with `npx wrangler deploy` from the monorepo root.
+
+Recommended Pages Git integration settings:
+
+- Root directory: `/`
+- Install command: Cloudflare default, or `pnpm install --frozen-lockfile`
+- Build command: `pnpm --filter @lucid/web build:pages`
+- Build output directory: `apps/web/out`
+- Deploy command: leave blank for Pages Git integration
+
+If using a custom deploy command instead of the Pages automatic deploy step, use:
+
+```bash
+pnpm cloudflare:deploy:web
+```
+
+This script intentionally uses `npx wrangler pages deploy` so Wrangler is fetched only for explicit deploys. Wrangler is not a normal workspace dependency because it pulls in `workerd`, which can require pnpm build-script approval on managed machines.
+
+Do not use:
+
+```bash
+npx wrangler deploy
+```
+
+That command is for Workers. In this monorepo it runs Wrangler application detection from the workspace root and fails before deploying the Pages output.
+
 Local Pages preview, only when Wrangler is locally available and no company policy blocks it:
 
 ```bash
@@ -75,8 +103,7 @@ wrangler pages dev ./out --config wrangler.jsonc
 Manual deploy, only when already authenticated and approved:
 
 ```bash
-cd apps/web
-wrangler pages deploy ./out --project-name lucid-hub-web
+pnpm cloudflare:deploy:web
 ```
 
 ## Preview Deployment Steps
@@ -121,6 +148,8 @@ On the current managed work PC, package scripts are blocked because `node` is no
 
 Latest fix:
 
+- Cloudflare deploy failure after successful build was caused by the dashboard running `npx wrangler deploy` from the monorepo root. That is a Workers deploy command and is the wrong product path for the Phase 0 static web shell.
+- Wrangler is not committed as a normal dependency; explicit deploy scripts use `npx wrangler pages ...` to avoid requiring `workerd` build approval during ordinary project installs.
 - Cloudflare build failure on `services/worker` was caused by missing explicit Node type configuration for service packages using `process.env`.
 - `services/api`, `services/realtime`, and `services/worker` now declare Node types in their package/tsconfig boundaries as needed.
 - `apps/mobile` now declares the `expo-status-bar` dependency used by its Expo shell.

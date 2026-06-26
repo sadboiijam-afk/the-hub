@@ -16,9 +16,11 @@ Technical risks:
 - Realtime service is only a bootstrap WebSocket server.
 - Mini-app runtime is not designed yet.
 - Cloudflare runtime compatibility is unknown.
+- Cloudflare dashboard must be configured as a Pages deployment for `apps/web/out`; a Workers deploy command such as `npx wrangler deploy` is the wrong deployment path for Phase 0.
 
 Recently mitigated:
 
+- Cloudflare deploy command confusion is documented and root Pages helper scripts now exist.
 - Cloudflare root build failure caused by missing Node process types in service package boundaries.
 - Mobile typecheck failure caused by undeclared `expo-status-bar`.
 - Lint failures caused by generated Next static export files under `out/`.

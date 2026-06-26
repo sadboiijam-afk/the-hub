@@ -35,9 +35,13 @@ Current config:
 - `apps/web/wrangler.jsonc`
 - `.github/workflows/cloudflare-pages-preview.yml`
 - GitHub Actions preview build uses Node.js 22.
+- Root helper scripts: `pnpm build:web`, `pnpm cloudflare:preview:web`, and `pnpm cloudflare:deploy:web`.
 
 Latest fix:
 
+- Cloudflare deploy failure after a successful build was caused by running `npx wrangler deploy` from the monorepo root. That is a Workers deploy command and should not be used for the Phase 0 Pages target.
+- Cloudflare dashboard should use Pages Git integration with build output `apps/web/out`, or custom deploy command `pnpm cloudflare:deploy:web`.
+- `pnpm cloudflare:deploy:web` uses `npx wrangler pages deploy` intentionally. Wrangler is not a normal dependency because it pulls in `workerd`, which can require pnpm build approval on managed machines.
 - Root `pnpm run build` previously failed on Cloudflare because `services/worker` used `process.env` without explicit Node type configuration.
 - Node type configuration has been added for Node-based services.
 - The Expo shell now declares `expo-status-bar`, which is required for mobile typecheck.
@@ -48,7 +52,8 @@ Latest fix:
 Do not run from a managed work PC:
 
 - `wrangler login`
-- deployment commands
+- deployment commands unless already authenticated and explicitly approved
+- `npx wrangler deploy` for this project; it targets Workers, not the current Pages deployment
 - token setup
 - global installs
 - Docker daemon changes
