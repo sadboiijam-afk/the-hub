@@ -10,6 +10,7 @@ Current Prisma config:
 
 - `packages/database/prisma.config.ts`
 - Uses Prisma 7 style config with datasource URL outside the schema file.
+- Uses `DATABASE_URL` when set and a local placeholder URL for schema validation when it is not set.
 
 Modeled domains:
 
@@ -36,7 +37,6 @@ Privacy-sensitive modeling choices:
 
 Next database tasks:
 
-- Validate schema on a normal Node-enabled dev machine.
 - Decide relation definitions and cascade behavior.
 - Add reviewed initial migration.
 - Add repository/service boundaries before using Prisma from domain code.

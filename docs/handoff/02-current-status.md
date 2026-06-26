@@ -32,6 +32,7 @@ Known environment blocker:
 Latest build status:
 
 - Cloudflare build failure from `services/worker` missing Node process types has been fixed.
+- Prisma schema validation now passes with a local placeholder datasource URL when `DATABASE_URL` is not set.
 - `pnpm --filter @lucid/worker build` passed when run with the bundled Codex Node runtime on PATH.
 - `pnpm run build` passed when run with the bundled Codex Node runtime on PATH.
 - `pnpm typecheck` passed when run with the bundled Codex Node runtime on PATH.

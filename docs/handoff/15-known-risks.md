@@ -8,7 +8,7 @@ Environment risks:
 
 Technical risks:
 
-- Prisma schema is broad and has not been validated after the Prisma 7 config update.
+- Prisma schema is broad and has been validated, but it still needs relation/cascade review before migrations.
 - Prisma relations and cascade behavior are not defined yet.
 - No migrations exist.
 - No auth/session implementation exists.
