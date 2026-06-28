@@ -2,7 +2,7 @@
 
 ## Deployment Target
 
-Phase 0 deploys only the public web shell:
+Current Cloudflare deployment support covers only the public web landing page:
 
 - Target: `apps/web`
 - Cloudflare product: Workers with Static Assets
@@ -134,7 +134,7 @@ On the current managed work PC, use only project-level commands and avoid global
 - `apps/web/wrangler.jsonc` now uses Workers Static Assets with `assets.directory` set to `./out`.
 - Production deploy uses `wrangler deploy`; preview deploy uses `wrangler deploy --env preview`.
 - Production deployment from commit `bccfd15` succeeded on Cloudflare.
-- Smoke test passed at `https://the-hub.sadboiijam.workers.dev/`; the page title is `LUCID Hub` and the landing shell renders.
+- Smoke test passed at `https://the-hub.sadboiijam.workers.dev/`; redeploy after local `apps/web` changes to publish the redesigned landing page.
 
 ## Production-Readiness Gaps
 

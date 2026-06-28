@@ -3,8 +3,9 @@ import type { ReactNode } from "react";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "LUCID Hub",
-  description: "A privacy-first European platform for trusted local digital life."
+  title: "LUCID Hub | Europe’s trust-first super-app",
+  description:
+    "Private messaging, verified communities, local merchants, mini-apps, bookings, coupons, and future regulated partner payments for Europe."
 };
 
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {

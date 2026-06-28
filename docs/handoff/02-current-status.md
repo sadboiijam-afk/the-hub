@@ -14,6 +14,7 @@ Completed in Phase 0:
 - Product, compliance, security, architecture, and handoff docs.
 - Smoke test files for selected packages and services.
 - Cloudflare Workers Static Assets configuration for the public web shell.
+- Premium public web landing page for LUCID Hub in `apps/web`, using a dark trust-tech hero, app mockups, trust/compliance sections, mini-app/merchant positioning, and architecture strip.
 - Local dependencies installed successfully in the current Node-enabled environment.
 - Phase 1 identity service skeleton added for privacy defaults, consent ledger intake, and GDPR data-rights request intake.
 
@@ -30,7 +31,7 @@ Known environment note:
 Latest local validation status:
 
 - Latest Cloudflare failure was deploy-only: build succeeded, but the deploy script targeted Cloudflare Pages while the dashboard project is a Worker named `the-hub`. The repo now deploys `apps/web/out` through Workers Static Assets.
-- Cloudflare production deploy from commit `bccfd15` succeeded, and the deployed Worker URL `https://the-hub.sadboiijam.workers.dev/` renders the Phase 0 `LUCID Hub` shell.
+- Cloudflare production deploy from commit `bccfd15` succeeded, and the deployed Worker URL `https://the-hub.sadboiijam.workers.dev/` renders an older `LUCID Hub` shell until the redesigned web landing page is deployed.
 - GitHub Actions and Cloudflare preview workflows now use Node.js 22 to satisfy pnpm 11.7.0 and modern Node built-in module requirements.
 - Cloudflare build failure from `services/worker` missing Node process types has been fixed.
 - Prisma schema validation now passes with a local placeholder datasource URL when `DATABASE_URL` is not set.

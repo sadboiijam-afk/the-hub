@@ -1,6 +1,6 @@
 # Deployment: Cloudflare
 
-Initial Cloudflare deployment support now exists for the public web shell. See `docs/deployment/cloudflare.md` for the operational source of truth.
+Initial Cloudflare deployment support exists for the public web shell. See `docs/deployment/cloudflare.md` for the operational source of truth.
 
 Deployment targets:
 
@@ -12,7 +12,7 @@ Deployment targets:
 
 Cloudflare products under consideration:
 
-- Workers for the Phase 0 public web shell through Workers Static Assets, and later for APIs/full-stack services after runtime review.
+- Workers for the public web landing page through Workers Static Assets, and later for APIs/full-stack services after runtime review.
 - Pages remains an alternative for static web surfaces if a separate Pages project is deliberately created.
 - Durable Objects for stateful realtime coordination.
 - R2 for future object storage.
@@ -45,7 +45,7 @@ Latest fix:
 - Cloudflare dashboard should use build command `pnpm build:web`, deploy command `pnpm cloudflare:deploy:web`, and non-production deploy command `pnpm cloudflare:preview:web`.
 - `pnpm cloudflare:deploy:web` now uses `npx wrangler deploy --config wrangler.jsonc`. Wrangler is not a normal dependency because it pulls in `workerd`, which can require pnpm build approval on managed machines.
 - Production deploy from commit `bccfd15` succeeded on Cloudflare.
-- Manual smoke test passed at `https://the-hub.sadboiijam.workers.dev/`; the deployed page renders the Phase 0 `LUCID Hub` shell.
+- Manual smoke test passed at `https://the-hub.sadboiijam.workers.dev/`; the deployed page may lag local `apps/web` changes until the redesigned landing page is deployed.
 - Root `pnpm run build` previously failed on Cloudflare because `services/worker` used `process.env` without explicit Node type configuration.
 - Node type configuration has been added for Node-based services.
 - The Expo shell now declares `expo-status-bar`, which is required for mobile typecheck.
