@@ -17,10 +17,12 @@ Current implemented surface:
   - `POST /identity/account-deletion-requests`
 - Identity services use an `IdentityRepository` interface boundary with an in-memory repository implementation for now.
 - Identity audit events are redacted and do not store account deletion reasons.
+- Identity routes are decorated with `IdentityAuthBoundaryGuard` and require an explicit `AuthenticatedUserContext`.
+- Identity controllers enforce self-access checks so route/body `userId` values cannot act as authorization by themselves.
 
 Prototype-only:
 
-- Identity routes are not authenticated yet.
+- Identity auth is a placeholder boundary only. No production password, session, JWT, OAuth, or device authentication is implemented yet.
 - Identity data is not persisted to PostgreSQL yet.
 - The in-memory repository exists only to stabilize service/controller boundaries before schema and migration review.
 
@@ -40,6 +42,7 @@ Remaining Phase 1 API work:
 
 - Auth/session flow.
 - Device registration.
+- Production implementation of the request-user/auth provider that feeds `AuthenticatedUserContext`.
 - PostgreSQL-backed identity repositories after Prisma relation/cascade review.
 - Route integration tests with the real Nest application pipeline.
 - Consent ledger, privacy settings, and data export/delete request persistence.

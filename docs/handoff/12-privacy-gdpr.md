@@ -14,6 +14,7 @@ Current controls:
 - Validated identity intake routes for privacy defaults, consent decisions, data export requests, and account deletion requests.
 - In-memory identity repository boundary for Phase 1 service/controller wiring.
 - Account deletion request reasons are accepted for intake records but are not copied into audit log metadata.
+- Identity routes require an explicit placeholder authenticated user context and currently enforce self-access only.
 
 Core privacy principles:
 
@@ -39,4 +40,4 @@ Open privacy work:
 - Define analytics boundaries.
 - Define support-tool access policy.
 - Define deletion/anonymization strategy per domain.
-- Add authentication and authorization before exposing identity data-rights routes beyond local development.
+- Replace the placeholder identity auth boundary with production session/device authentication before exposing identity data-rights routes beyond local development.

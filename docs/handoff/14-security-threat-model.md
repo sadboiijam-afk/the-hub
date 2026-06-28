@@ -31,11 +31,21 @@ Baseline controls:
 - Structured redacted logs.
 - Feature flags.
 - Audit logs for sensitive operations.
+- Placeholder identity auth boundary requiring an explicit authenticated user context.
+- Self-access checks on current identity privacy/data-rights routes.
 - No custom production cryptography.
 - No wallet, card storage, or bank credential storage.
 
+Identity-specific notes:
+
+- Current identity routes must not be considered production-authenticated.
+- `IdentityAuthBoundaryGuard` only proves the controller cannot run without an upstream user context.
+- A production auth provider must verify sessions/devices and populate `AuthenticatedUserContext`.
+- Route and body `userId` values are treated as targets only, never as proof of authorization.
+- Before production exposure, identity routes need real auth/session validation, audit review, rate limiting, and route-level integration tests.
+
 Required next work:
 
-- Add domain-specific threat notes before implementing identity, messaging, payments, mini-app runtime, or moderation workflows.
+- Add deeper domain-specific threat notes before implementing messaging, payments, mini-app runtime, or moderation workflows.
 - Add security tests for auth/session behavior in Phase 1.
 - Define incident response and access review process before admin tooling goes live.

@@ -9,6 +9,7 @@ Goals:
 - Create reviewed initial migration.
 - Continue identity module beyond the current HTTP/in-memory skeleton.
 - Add auth/session/device primitives.
+- Replace the current placeholder identity auth boundary with production-grade session/device validation.
 - Add persisted consent ledger service.
 - Add persisted privacy settings service.
 - Add persisted data export/delete request intake.
@@ -21,8 +22,8 @@ Suggested tasks:
 4. Add initial migration after review.
 5. Replace the current in-memory identity repository with reviewed persistence boundaries after Prisma relation/cascade review.
 6. Add user/session/device repositories.
-7. Add authenticated route guards before non-local identity routes are considered production behavior.
-8. Add route integration tests against the real Nest application pipeline.
+7. Replace `IdentityAuthBoundaryGuard` placeholder behavior with real auth/session/device validation.
+8. Add route integration tests against the real Nest application pipeline, including unauthorized and cross-user denial cases.
 9. Update privacy and threat docs with identity-specific notes.
 
 Do not include in next sprint:

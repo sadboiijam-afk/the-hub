@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, ParseUUIDPipe, Post } from "@nestjs/common";
+import { Body, Controller, Get, Param, ParseUUIDPipe, Post, UseGuards } from "@nestjs/common";
 import type {
   AccountDeletionRequestIntake,
   DataExportRequestIntake,
@@ -6,9 +6,16 @@ import type {
   UserPrivacySettings
 } from "@lucid/shared-types";
 import { RecordConsentDto, RequestAccountDeletionDto, RequestDataExportDto } from "./identity.dto.js";
+import {
+  assertAuthenticatedSelfAccess,
+  type AuthenticatedUserContext,
+  IdentityAuthBoundaryGuard,
+  RequestUser
+} from "./identity.auth.js";
 import { ConsentLedgerService, DataRightsService, PrivacySettingsService } from "./identity.service.js";
 
 @Controller("identity")
+@UseGuards(IdentityAuthBoundaryGuard)
 export class IdentityController {
   constructor(
     private readonly privacySettingsService: PrivacySettingsService,
@@ -17,24 +24,42 @@ export class IdentityController {
   ) {}
 
   @Get("privacy-defaults/:userId")
-  getPrivacyDefaults(
-    @Param("userId", new ParseUUIDPipe({ version: "4" })) userId: string
+  async getPrivacyDefaults(
+    @Param("userId", new ParseUUIDPipe({ version: "4" })) userId: string,
+    @RequestUser() user: AuthenticatedUserContext
   ): Promise<UserPrivacySettings> {
-    return this.privacySettingsService.createDefaultSettings(userId);
+    assertAuthenticatedSelfAccess(user, userId);
+
+    return await this.privacySettingsService.createDefaultSettings(userId);
   }
 
   @Post("consents")
-  recordConsent(@Body() body: RecordConsentDto): Promise<RecordedConsent> {
-    return this.consentLedgerService.recordConsent(body);
+  async recordConsent(
+    @Body() body: RecordConsentDto,
+    @RequestUser() user: AuthenticatedUserContext
+  ): Promise<RecordedConsent> {
+    assertAuthenticatedSelfAccess(user, body.userId);
+
+    return await this.consentLedgerService.recordConsent(body);
   }
 
   @Post("data-export-requests")
-  requestDataExport(@Body() body: RequestDataExportDto): Promise<DataExportRequestIntake> {
-    return this.dataRightsService.createExportRequest(body);
+  async requestDataExport(
+    @Body() body: RequestDataExportDto,
+    @RequestUser() user: AuthenticatedUserContext
+  ): Promise<DataExportRequestIntake> {
+    assertAuthenticatedSelfAccess(user, body.userId);
+
+    return await this.dataRightsService.createExportRequest(body);
   }
 
   @Post("account-deletion-requests")
-  requestAccountDeletion(@Body() body: RequestAccountDeletionDto): Promise<AccountDeletionRequestIntake> {
-    return this.dataRightsService.createDeletionRequest(body);
+  async requestAccountDeletion(
+    @Body() body: RequestAccountDeletionDto,
+    @RequestUser() user: AuthenticatedUserContext
+  ): Promise<AccountDeletionRequestIntake> {
+    assertAuthenticatedSelfAccess(user, body.userId);
+
+    return await this.dataRightsService.createDeletionRequest(body);
   }
 }
