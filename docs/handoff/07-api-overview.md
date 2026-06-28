@@ -1,6 +1,6 @@
 # API Overview
 
-The API service is a NestJS shell only.
+The API service is a NestJS shell with health and early Phase 1 identity intake routes.
 
 Current package:
 
@@ -10,8 +10,19 @@ Current implemented surface:
 
 - `GET /health` returns a typed health payload.
 - Global validation pipe is configured in `main.ts`.
-- `IdentityModule` is registered with DTOs and in-memory services for privacy defaults, consent ledger intake, and GDPR data-rights request intake.
-- No domain HTTP endpoints are implemented beyond health.
+- `IdentityModule` exposes validated HTTP endpoints:
+  - `GET /identity/privacy-defaults/:userId`
+  - `POST /identity/consents`
+  - `POST /identity/data-export-requests`
+  - `POST /identity/account-deletion-requests`
+- Identity services use an `IdentityRepository` interface boundary with an in-memory repository implementation for now.
+- Identity audit events are redacted and do not store account deletion reasons.
+
+Prototype-only:
+
+- Identity routes are not authenticated yet.
+- Identity data is not persisted to PostgreSQL yet.
+- The in-memory repository exists only to stabilize service/controller boundaries before schema and migration review.
 
 Required API standards:
 
@@ -25,13 +36,12 @@ Required API standards:
 - Tests for every domain service.
 - Integration tests for critical routes.
 
-Phase 1 API work:
+Remaining Phase 1 API work:
 
-- Identity module persistence and route integration.
 - Auth/session flow.
 - Device registration.
-- Consent ledger.
-- Privacy settings.
-- Data export/delete request skeleton.
+- PostgreSQL-backed identity repositories after Prisma relation/cascade review.
+- Route integration tests with the real Nest application pipeline.
+- Consent ledger, privacy settings, and data export/delete request persistence.
 
 Do not add chat, payments, mini-app runtime, or moderation workflow endpoints until their planned phases.

@@ -11,6 +11,9 @@ Current controls:
 - Audit log schema.
 - Redacted log event helper.
 - Feature flags for incomplete behavior.
+- Validated identity intake routes for privacy defaults, consent decisions, data export requests, and account deletion requests.
+- In-memory identity repository boundary for Phase 1 service/controller wiring.
+- Account deletion request reasons are accepted for intake records but are not copied into audit log metadata.
 
 Core privacy principles:
 
@@ -22,8 +25,8 @@ Core privacy principles:
 
 Data subject rights to implement in Phase 1:
 
-- Access/export request intake.
-- Deletion request intake.
+- Persisted access/export request intake.
+- Persisted deletion request intake.
 - Correction hooks.
 - Restriction and objection handling.
 - Retention exception handling for fraud, safety, accounting, and legal obligations.
@@ -36,3 +39,4 @@ Open privacy work:
 - Define analytics boundaries.
 - Define support-tool access policy.
 - Define deletion/anonymization strategy per domain.
+- Add authentication and authorization before exposing identity data-rights routes beyond local development.

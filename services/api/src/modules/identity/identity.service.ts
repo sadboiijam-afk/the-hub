@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Inject, Injectable } from "@nestjs/common";
 import { createRedactedLogEvent } from "@lucid/config";
 import type {
   AccountDeletionRequestCommand,
@@ -9,90 +9,98 @@ import type {
   RecordedConsent,
   UserPrivacySettings
 } from "@lucid/shared-types";
+import { InMemoryIdentityRepository, type IdentityAuditEvent, type IdentityRepository } from "./identity.repository.js";
+
 @Injectable()
 export class PrivacySettingsService {
-  createDefaultSettings(userId: string): UserPrivacySettings {
-    createRedactedLogEvent({
-      event: "identity.privacy_settings.defaulted",
-      actorId: userId,
-      targetId: userId
-    });
+  constructor(@Inject(InMemoryIdentityRepository) private readonly repository: IdentityRepository) {}
 
-    return {
+  async createDefaultSettings(userId: string): Promise<UserPrivacySettings> {
+    await this.repository.recordAuditEvent(
+      createRedactedLogEvent({
+        event: "identity.privacy_settings.defaulted",
+        actorId: userId,
+        targetId: userId
+      })
+    );
+
+    return this.repository.savePrivacySettings({
       userId,
       discoverableByEmail: false,
       discoverableByPhone: false,
       allowBusinessMessages: true,
       allowPersonalizedFeed: false
-    };
+    });
   }
 }
 
 @Injectable()
 export class ConsentLedgerService {
-  recordConsent(command: ConsentRecordCommand): RecordedConsent {
-    createRedactedLogEvent({
-      event: "identity.consent.recorded",
-      actorId: command.userId,
-      targetId: command.userId,
-      metadata: {
-        consentKey: command.consentKey,
-        granted: command.granted,
-        lawfulBasis: command.lawfulBasis
-      }
-    });
+  constructor(@Inject(InMemoryIdentityRepository) private readonly repository: IdentityRepository) {}
 
-    return {
+  async recordConsent(command: ConsentRecordCommand): Promise<RecordedConsent> {
+    await this.repository.recordAuditEvent(
+      createRedactedLogEvent({
+        event: "identity.consent.recorded",
+        actorId: command.userId,
+        targetId: command.userId,
+        metadata: {
+          consentKey: command.consentKey,
+          granted: command.granted,
+          lawfulBasis: command.lawfulBasis
+        }
+      })
+    );
+
+    return this.repository.saveConsent({
       ...command,
       status: "recorded"
-    };
+    });
   }
 }
 
 @Injectable()
 export class DataRightsService {
-  createExportRequest(command: DataExportRequestCommand): DataExportRequestIntake {
-    createRedactedLogEvent({
-      event: "identity.data_export.requested",
-      actorId: command.userId,
-      targetId: command.userId
-    });
+  constructor(@Inject(InMemoryIdentityRepository) private readonly repository: IdentityRepository) {}
 
-    return {
+  async createExportRequest(command: DataExportRequestCommand): Promise<DataExportRequestIntake> {
+    await this.repository.recordAuditEvent(
+      createRedactedLogEvent({
+        event: "identity.data_export.requested",
+        actorId: command.userId,
+        targetId: command.userId
+      })
+    );
+
+    return this.repository.saveDataExportRequest({
       userId: command.userId,
       requestType: "export",
       status: "requested"
-    };
+    });
   }
 
-  createDeletionRequest(command: AccountDeletionRequestCommand): AccountDeletionRequestIntake {
-    const logEvent =
+  async createDeletionRequest(command: AccountDeletionRequestCommand): Promise<AccountDeletionRequestIntake> {
+    const logEvent: IdentityAuditEvent = {
+      event: "identity.account_deletion.requested",
+      actorId: command.userId,
+      targetId: command.userId
+    };
+
+    await this.repository.recordAuditEvent(createRedactedLogEvent(logEvent));
+
+    return this.repository.saveAccountDeletionRequest(
       command.reason === undefined
         ? {
-            event: "identity.account_deletion.requested",
-            actorId: command.userId,
-            targetId: command.userId
+            userId: command.userId,
+            requestType: "deletion",
+            status: "requested"
           }
         : {
-            event: "identity.account_deletion.requested",
-            actorId: command.userId,
-            targetId: command.userId,
-            metadata: { reason: command.reason }
-          };
-
-    createRedactedLogEvent(logEvent);
-
-    return command.reason === undefined
-      ? {
-          userId: command.userId,
-          requestType: "deletion",
-          status: "requested"
-        }
-      : {
-          userId: command.userId,
-          requestType: "deletion",
-          reason: command.reason,
-          status: "requested"
-        };
+            userId: command.userId,
+            requestType: "deletion",
+            reason: command.reason,
+            status: "requested"
+          }
+    );
   }
 }
