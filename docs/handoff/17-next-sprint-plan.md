@@ -23,8 +23,9 @@ Suggested tasks:
 5. Replace the current in-memory identity repository with reviewed persistence boundaries after Prisma relation/cascade review.
 6. Add user/session/device repositories.
 7. Replace `IdentityAuthBoundaryGuard` placeholder behavior with real auth/session/device validation.
-8. Add route integration tests against the real Nest application pipeline, including unauthorized and cross-user denial cases.
+8. Extend route integration tests with production auth/session flows after the auth provider exists.
 9. Update privacy and threat docs with identity-specific notes.
+10. Add rate limiting and audit review rules for identity privacy/data-rights routes.
 
 Do not include in next sprint:
 

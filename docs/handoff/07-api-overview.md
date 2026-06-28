@@ -19,6 +19,7 @@ Current implemented surface:
 - Identity audit events are redacted and do not store account deletion reasons.
 - Identity routes are decorated with `IdentityAuthBoundaryGuard` and require an explicit `AuthenticatedUserContext`.
 - Identity controllers enforce self-access checks so route/body `userId` values cannot act as authorization by themselves.
+- HTTP-level tests cover missing request users, cross-user denial, invalid UUIDs, and invalid consent lawful bases.
 
 Prototype-only:
 
@@ -43,8 +44,9 @@ Remaining Phase 1 API work:
 - Auth/session flow.
 - Device registration.
 - Production implementation of the request-user/auth provider that feeds `AuthenticatedUserContext`.
+- Rate limiting and audit review for identity privacy/data-rights endpoints.
 - PostgreSQL-backed identity repositories after Prisma relation/cascade review.
-- Route integration tests with the real Nest application pipeline.
+- Broader route integration tests with the real Nest application pipeline.
 - Consent ledger, privacy settings, and data export/delete request persistence.
 
 Do not add chat, payments, mini-app runtime, or moderation workflow endpoints until their planned phases.

@@ -13,7 +13,7 @@ export interface AuthenticatedUserContext {
 }
 
 export interface RequestWithUser {
-  readonly user?: AuthenticatedUserContext;
+  user?: AuthenticatedUserContext;
 }
 
 export const RequestUser = createParamDecorator((_data: unknown, context: ExecutionContext): AuthenticatedUserContext => {
@@ -32,6 +32,7 @@ export class IdentityAuthBoundaryGuard implements CanActivate {
     const request = context.switchToHttp().getRequest<RequestWithUser>();
 
     // SECURITY TODO: replace this placeholder with production auth/session verification before exposing identity routes.
+    // SECURITY TODO: add identity-route rate limiting and audit review before production exposure.
     if (request.user === undefined) {
       throw new UnauthorizedException(
         "Identity routes require an upstream auth provider before production use."
