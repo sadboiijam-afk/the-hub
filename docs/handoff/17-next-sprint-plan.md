@@ -13,6 +13,7 @@ Goals:
 - Add persisted consent ledger service.
 - Add persisted privacy settings service.
 - Add persisted data export/delete request intake.
+- Review whether `Consent.lawfulBasis` should be a database enum before initial migration.
 
 Suggested tasks:
 
@@ -26,6 +27,7 @@ Suggested tasks:
 8. Extend route integration tests with production auth/session flows after the auth provider exists.
 9. Update privacy and threat docs with identity-specific notes.
 10. Add rate limiting and audit review rules for identity privacy/data-rights routes.
+11. Decide identity retention and legal-hold rules before generating migrations.
 
 Do not include in next sprint:
 

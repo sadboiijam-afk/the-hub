@@ -19,6 +19,9 @@ Database:
 - Which Prisma relations and cascade rules should be explicit in the first migration?
 - What retention rules apply to messages, reports, bookings, and audit logs?
 - Which fields need encryption at rest beyond platform defaults?
+- Should `Consent.lawfulBasis` become a Prisma enum instead of a string?
+- What retention and legal-hold rules apply to identity consent, export, deletion, and audit records?
+- Should deletion request reasons be stored as free text, taxonomy keys, encrypted text, or external references?
 
 Security and compliance:
 

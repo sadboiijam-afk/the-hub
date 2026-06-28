@@ -35,6 +35,19 @@ Privacy-sensitive modeling choices:
 - Webhook payloads use `payloadRef`, not committed inline sensitive payload storage.
 - Payment records do not store card data or bank credentials.
 
+Identity persistence review:
+
+- Current identity API contracts map to existing Prisma models without schema changes:
+  - privacy settings -> `UserPrivacySetting`
+  - consent ledger -> `Consent`
+  - data export requests -> `DataExportRequest`
+  - account deletion requests -> `DeletionRequest`
+  - redacted identity audit events -> `AuditLog`
+- `PrismaIdentityRepository` is a structural adapter for these existing model names and fields.
+- No migration was generated in this pass because the current schema already has the required tables and relation/cascade behavior still needs review before initial migration creation.
+- `DeletionRequest.reason` can store the user-supplied intake reason, but service audit metadata must not copy raw deletion reasons into `AuditLog.metadata`.
+- `Consent.lawfulBasis` is currently a string. The API restricts accepted values with DTO validation, but the database does not yet enforce an enum.
+
 Next database tasks:
 
 - Decide relation definitions and cascade behavior.

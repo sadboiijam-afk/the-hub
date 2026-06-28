@@ -44,10 +44,12 @@ Identity-specific notes:
 - Route and body `userId` values are treated as targets only, never as proof of authorization.
 - Before production exposure, identity routes need real auth/session validation, audit review, rate limiting, and route-level integration tests.
 - HTTP-level tests currently prove the placeholder boundary denies missing request users, rejects cross-user access, and preserves validation failures.
+- Prisma persistence mapping keeps raw account deletion reasons out of audit metadata, but database retention and access rules remain undecided.
 
 Required next work:
 
 - Add deeper domain-specific threat notes before implementing messaging, payments, mini-app runtime, or moderation workflows.
 - Add security tests for auth/session behavior in Phase 1.
 - Add rate limiting and suspicious-request audit rules for identity data-rights routes.
+- Review database relation/cascade rules and retention constraints before initial identity migrations.
 - Define incident response and access review process before admin tooling goes live.

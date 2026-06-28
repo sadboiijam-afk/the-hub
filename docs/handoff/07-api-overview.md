@@ -16,6 +16,7 @@ Current implemented surface:
   - `POST /identity/data-export-requests`
   - `POST /identity/account-deletion-requests`
 - Identity services use an `IdentityRepository` interface boundary with an in-memory repository implementation for now.
+- `PrismaIdentityRepository` maps identity privacy/data-rights records to existing Prisma model names through a structural client interface, but it is not wired into `IdentityModule` yet.
 - Identity audit events are redacted and do not store account deletion reasons.
 - Identity routes are decorated with `IdentityAuthBoundaryGuard` and require an explicit `AuthenticatedUserContext`.
 - Identity controllers enforce self-access checks so route/body `userId` values cannot act as authorization by themselves.
@@ -26,6 +27,7 @@ Prototype-only:
 - Identity auth is a placeholder boundary only. No production password, session, JWT, OAuth, or device authentication is implemented yet.
 - Identity data is not persisted to PostgreSQL yet.
 - The in-memory repository exists only to stabilize service/controller boundaries before schema and migration review.
+- The Prisma repository adapter is covered by fake-client tests only and does not connect to a live database.
 
 Required API standards:
 
@@ -46,6 +48,7 @@ Remaining Phase 1 API work:
 - Production implementation of the request-user/auth provider that feeds `AuthenticatedUserContext`.
 - Rate limiting and audit review for identity privacy/data-rights endpoints.
 - PostgreSQL-backed identity repositories after Prisma relation/cascade review.
+- Dependency injection switch from `InMemoryIdentityRepository` to a real Prisma client provider after migration review.
 - Broader route integration tests with the real Nest application pipeline.
 - Consent ledger, privacy settings, and data export/delete request persistence.
 

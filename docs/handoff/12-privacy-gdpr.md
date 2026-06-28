@@ -15,6 +15,7 @@ Current controls:
 - In-memory identity repository boundary for Phase 1 service/controller wiring.
 - Account deletion request reasons are accepted for intake records but are not copied into audit log metadata.
 - Identity routes require an explicit placeholder authenticated user context and currently enforce self-access only.
+- Prisma persistence mapping exists for privacy settings, consent records, export requests, deletion requests, and redacted audit logs, but production database wiring is not enabled yet.
 
 Core privacy principles:
 
@@ -41,3 +42,4 @@ Open privacy work:
 - Define support-tool access policy.
 - Define deletion/anonymization strategy per domain.
 - Replace the placeholder identity auth boundary with production session/device authentication before exposing identity data-rights routes beyond local development.
+- Decide retention and deletion behavior for consent records, data export requests, deletion requests, and audit logs before generating migrations.
