@@ -84,3 +84,44 @@ export interface ApiHealth {
   readonly service: string;
   readonly version: string;
 }
+export interface UserPrivacySettings {
+  readonly userId: string;
+  readonly discoverableByEmail: boolean;
+  readonly discoverableByPhone: boolean;
+  readonly allowBusinessMessages: boolean;
+  readonly allowPersonalizedFeed: boolean;
+}
+
+export interface ConsentRecordCommand {
+  readonly userId: string;
+  readonly consentKey: string;
+  readonly policyVersion: string;
+  readonly granted: boolean;
+  readonly lawfulBasis: "consent" | "contract" | "legal_obligation" | "legitimate_interest";
+}
+
+export interface RecordedConsent extends ConsentRecordCommand {
+  readonly status: "recorded";
+}
+
+export interface DataExportRequestCommand {
+  readonly userId: string;
+}
+
+export interface AccountDeletionRequestCommand {
+  readonly userId: string;
+  readonly reason?: string;
+}
+
+export interface DataExportRequestIntake {
+  readonly userId: string;
+  readonly requestType: "export";
+  readonly status: "requested";
+}
+
+export interface AccountDeletionRequestIntake {
+  readonly userId: string;
+  readonly requestType: "deletion";
+  readonly status: "requested";
+  readonly reason?: string;
+}

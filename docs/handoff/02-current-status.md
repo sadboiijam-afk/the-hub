@@ -1,6 +1,6 @@
 # Current Status
 
-The project is in Phase 0 foundation state.
+The project is in Phase 0 foundation state with Phase 1 identity skeleton work started.
 
 Completed in Phase 0:
 
@@ -14,22 +14,20 @@ Completed in Phase 0:
 - Product, compliance, security, architecture, and handoff docs.
 - Smoke test files for selected packages and services.
 - Cloudflare Workers Static Assets configuration for the public web shell.
+- Local dependencies installed successfully in the current Node-enabled environment.
+- Phase 1 identity service skeleton added for privacy defaults, consent ledger intake, and GDPR data-rights request intake.
 
 Not completed:
 
-- Dependencies have not been reliably validated on this managed work PC because package scripts cannot find `node`.
-- Prisma validation was attempted before the current `prisma.config.ts` update and was blocked by Prisma 7 config changes; it still needs rerun on a normal dev environment.
 - No migrations have been generated.
-- No production app behavior has been implemented.
-- No Git repository metadata is present in the local workspace.
+- No production app behavior beyond in-memory service skeletons has been implemented.
 
-Known environment blocker:
+Known environment note:
 
-- `pnpm exec node -v` fails with `Command "node" not found` on this machine.
-- `pnpm typecheck` and `pnpm test` fail before code execution for the same reason.
+- Older managed-PC runs could not discover `node` through pnpm; the current environment exposes Node.js and pnpm and can run package scripts.
 - Do not bypass company controls with global installs, broad build approvals, Docker daemon changes, account login, or deployment commands.
 
-Latest build status:
+Latest local validation status:
 
 - Latest Cloudflare failure was deploy-only: build succeeded, but the deploy script targeted Cloudflare Pages while the dashboard project is a Worker named `the-hub`. The repo now deploys `apps/web/out` through Workers Static Assets.
 - Cloudflare production deploy from commit `bccfd15` succeeded, and the deployed Worker URL `https://the-hub.sadboiijam.workers.dev/` renders the Phase 0 `LUCID Hub` shell.
@@ -38,6 +36,8 @@ Latest build status:
 - Prisma schema validation now passes with a local placeholder datasource URL when `DATABASE_URL` is not set.
 - `pnpm --filter @lucid/worker build` passed when run with the bundled Codex Node runtime on PATH.
 - `pnpm run build` passed when run with the bundled Codex Node runtime on PATH.
-- `pnpm typecheck` passed when run with the bundled Codex Node runtime on PATH.
-- `pnpm test` passed when run with the bundled Codex Node runtime on PATH.
-- `pnpm lint` passed when run with the bundled Codex Node runtime on PATH.
+- `pnpm --filter @lucid/database prisma:validate` passed on 2026-06-28.
+- `pnpm lint` passed on 2026-06-28.
+- `pnpm typecheck` passed on 2026-06-28.
+- `pnpm test` passed on 2026-06-28.
+- `pnpm build:web` passed on 2026-06-28.

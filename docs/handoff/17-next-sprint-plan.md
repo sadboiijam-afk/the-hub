@@ -19,7 +19,7 @@ Suggested tasks:
 2. Run `pnpm install`, Prisma validation, typecheck, and tests.
 3. Review and correct Prisma schema relations.
 4. Add initial migration after review.
-5. Create NestJS identity module with DTO validation.
+5. Continue NestJS identity module beyond the current DTO/service skeleton by adding route integration and persistence boundaries.
 6. Add user/session/device repositories.
 7. Add redacted logging and audit events for identity actions.
 8. Add service tests and route integration tests.

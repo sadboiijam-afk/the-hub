@@ -10,7 +10,8 @@ Current implemented surface:
 
 - `GET /health` returns a typed health payload.
 - Global validation pipe is configured in `main.ts`.
-- No domain endpoints are implemented.
+- `IdentityModule` is registered with DTOs and in-memory services for privacy defaults, consent ledger intake, and GDPR data-rights request intake.
+- No domain HTTP endpoints are implemented beyond health.
 
 Required API standards:
 
@@ -26,7 +27,7 @@ Required API standards:
 
 Phase 1 API work:
 
-- Identity module.
+- Identity module persistence and route integration.
 - Auth/session flow.
 - Device registration.
 - Consent ledger.
