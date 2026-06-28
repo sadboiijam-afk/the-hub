@@ -8,6 +8,12 @@ async function bootstrap() {
     bufferLogs: true
   });
 
+  app.enableCors({
+    origin: ["http://localhost:3000", "http://localhost:3001"],
+    methods: ["GET", "POST", "PATCH", "OPTIONS"],
+    allowedHeaders: ["content-type"]
+  });
+
   app.useGlobalPipes(
     new ValidationPipe({
       forbidNonWhitelisted: true,

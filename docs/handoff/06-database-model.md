@@ -15,6 +15,7 @@ Current Prisma config:
 Modeled domains:
 
 - Identity: users, devices, sessions, privacy settings, consents, export requests, deletion requests.
+- Preview intake: preview requests, preview roles, and review statuses.
 - Social graph: contacts, blocks, friend requests.
 - Messaging: conversations, participants, messages, attachments, receipts, message reports.
 - Communities: communities, members, roles, invites, rules.
@@ -34,6 +35,7 @@ Privacy-sensitive modeling choices:
 - Message bodies are represented by `bodyRef`, not raw body content.
 - Webhook payloads use `payloadRef`, not committed inline sensitive payload storage.
 - Payment records do not store card data or bank credentials.
+- Preview requests store contact/intake fields only and do not store secrets, payment data, wallet data, or credentials.
 
 Identity persistence review:
 
@@ -48,9 +50,18 @@ Identity persistence review:
 - `DeletionRequest.reason` can store the user-supplied intake reason, but service audit metadata must not copy raw deletion reasons into `AuditLog.metadata`.
 - `Consent.lawfulBasis` is currently a string. The API restricts accepted values with DTO validation, but the database does not yet enforce an enum.
 
+Preview request model:
+
+- `PreviewRequest` was added for landing-page preview/waitlist intake.
+- `PreviewRole` values are `user`, `merchant`, `creator`, `developer`, and `community`.
+- `PreviewRequestStatus` values are `new`, `in_review`, `approved`, and `declined`.
+- The model includes `consentGranted` and `lawfulBasisCandidate` with the value `consent_candidate_needs_legal_review`.
+- No migration was generated in this pass; generate and review a migration only after relation/retention review and after deciding whether the API should use a Prisma-backed repository.
+
 Next database tasks:
 
 - Decide relation definitions and cascade behavior.
 - Add reviewed initial migration.
 - Add repository/service boundaries before using Prisma from domain code.
+- Wire preview request repository persistence after migration review.
 - Add retention and deletion strategy per domain.

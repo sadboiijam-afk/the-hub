@@ -13,6 +13,8 @@ Goals:
 - Add persisted consent ledger service.
 - Add persisted privacy settings service.
 - Add persisted data export/delete request intake.
+- Wire preview request persistence to Prisma after reviewing the new `PreviewRequest` model and generating an approved migration.
+- Replace the preview request admin development switch with authenticated admin authorization, audit logs, and rate limiting.
 - Review whether `Consent.lawfulBasis` should be a database enum before initial migration.
 
 Suggested tasks:
@@ -28,6 +30,7 @@ Suggested tasks:
 9. Update privacy and threat docs with identity-specific notes.
 10. Add rate limiting and audit review rules for identity privacy/data-rights routes.
 11. Decide identity retention and legal-hold rules before generating migrations.
+12. Add production-safe preview request export/deletion handling and retention policy.
 
 Do not include in next sprint:
 

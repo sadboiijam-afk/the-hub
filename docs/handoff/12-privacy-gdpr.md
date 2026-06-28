@@ -16,6 +16,8 @@ Current controls:
 - Account deletion request reasons are accepted for intake records but are not copied into audit log metadata.
 - Identity routes require an explicit placeholder authenticated user context and currently enforce self-access only.
 - Prisma persistence mapping exists for privacy settings, consent records, export requests, deletion requests, and redacted audit logs, but production database wiring is not enabled yet.
+- Preview request intake now collects email, role, optional name/city/country/message, and explicit consent. The lawful-basis assumption is `consent_candidate_needs_legal_review`; it is a candidate only and needs legal review before production use.
+- Preview request admin review is pre-production only and must not be exposed without real admin authentication, authorization, audit logging, retention policy, and access review.
 
 Core privacy principles:
 
@@ -41,5 +43,7 @@ Open privacy work:
 - Define analytics boundaries.
 - Define support-tool access policy.
 - Define deletion/anonymization strategy per domain.
+- Define export and deletion handling for preview request records, including whether optional messages should be redacted, deleted, or retained under a documented exception.
+- Define preview request retention and consent withdrawal behavior before enabling production persistence.
 - Replace the placeholder identity auth boundary with production session/device authentication before exposing identity data-rights routes beyond local development.
 - Decide retention and deletion behavior for consent records, data export requests, deletion requests, and audit logs before generating migrations.

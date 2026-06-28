@@ -12,6 +12,8 @@ Current Cloudflare deployment support covers only the public web landing page:
 
 The admin panel is intentionally excluded until authentication, authorization, audit logging, and access-control review are complete.
 
+The redesigned web app now includes a `/preview` form that calls the API through `NEXT_PUBLIC_API_BASE_URL`. Cloudflare environments that publish the form must set this variable to the correct API origin. The client does not use a production fallback URL.
+
 ## Cloudflare Products Used
 
 - Cloudflare Workers for the public static web shell through Workers Static Assets.
@@ -37,6 +39,14 @@ Wrangler config separates:
 - Production: `pnpm cloudflare:deploy:web`
 
 Do not commit real account IDs, tokens, API keys, `.env` files, `.dev.vars`, or production credentials.
+
+Public, non-secret environment variable:
+
+- `NEXT_PUBLIC_API_BASE_URL`: API origin used by the public preview request form and the admin pre-production surface.
+
+Development-only API switch:
+
+- `PREVIEW_ADMIN_ENABLED=true`: enables preview request admin list/status endpoints locally or in a protected pre-production environment only. This is not production auth and is ignored when `NODE_ENV=production`.
 
 ## Required GitHub Secrets
 
@@ -140,6 +150,8 @@ On the current managed work PC, use only project-level commands and avoid global
 
 - Web app is a Phase 0 shell only.
 - Admin panel must not be public until access control exists.
+- Preview request form requires a reachable API origin through `NEXT_PUBLIC_API_BASE_URL`.
+- Preview request admin review uses a development-only API switch and must be replaced by real admin auth before public use.
 - API, realtime, and worker services are not Cloudflare-runtime-ready.
 - No Cloudflare bindings for R2, KV, Queues, Durable Objects, D1, or Hyperdrive are configured yet.
 - Deployed smoke test is manual only; no automated post-deploy smoke test is configured yet.

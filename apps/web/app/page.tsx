@@ -184,7 +184,7 @@ export default function HomePage() {
             <a href="#merchants">Merchants</a>
             <a href="#developers">Developers</a>
           </div>
-          <a className="nav-cta" href="#preview">
+          <a className="nav-cta" href="/preview">
             Join waitlist
           </a>
         </nav>
@@ -197,7 +197,7 @@ export default function HomePage() {
               future regulated partner payments &mdash; built for the European market.
             </p>
             <div className="hero-actions">
-              <a className="primary-button" href="#preview">
+              <a className="primary-button" href="/preview">
                 Explore the hub
               </a>
               <a className="secondary-button" href="#trust">
@@ -333,7 +333,7 @@ export default function HomePage() {
           <h2 id="final-title">Build the European super-app layer.</h2>
           <p>Join the preview and help shape a local digital life platform built on privacy and trust.</p>
         </div>
-        <a className="primary-button" href="#product">
+        <a className="primary-button" href="/preview">
           Start preview
         </a>
       </section>

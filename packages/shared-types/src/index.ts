@@ -125,3 +125,33 @@ export interface AccountDeletionRequestIntake {
   readonly status: "requested";
   readonly reason?: string;
 }
+
+export const previewRoles = ["user", "merchant", "creator", "developer", "community"] as const;
+
+export type PreviewRole = (typeof previewRoles)[number];
+
+export const previewRequestStatuses = ["new", "in_review", "approved", "declined"] as const;
+
+export type PreviewRequestStatus = (typeof previewRequestStatuses)[number];
+
+export interface CreatePreviewRequestInput {
+  readonly email: string;
+  readonly role: PreviewRole;
+  readonly consentGranted: boolean;
+  readonly name?: string;
+  readonly city?: string;
+  readonly country?: string;
+  readonly message?: string;
+}
+
+export interface PreviewRequest extends CreatePreviewRequestInput {
+  readonly id: string;
+  readonly status: PreviewRequestStatus;
+  readonly lawfulBasisCandidate: "consent_candidate_needs_legal_review";
+  readonly createdAt: string;
+  readonly updatedAt: string;
+}
+
+export interface UpdatePreviewRequestStatusInput {
+  readonly status: PreviewRequestStatus;
+}

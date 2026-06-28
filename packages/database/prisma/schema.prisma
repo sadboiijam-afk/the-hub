@@ -57,6 +57,21 @@ enum OrderStatus {
   fulfilled
 }
 
+enum PreviewRole {
+  user
+  merchant
+  creator
+  developer
+  community
+}
+
+enum PreviewRequestStatus {
+  new
+  in_review
+  approved
+  declined
+}
+
 model User {
   id             String   @id @default(uuid()) @db.Uuid
   displayName    String?
@@ -135,6 +150,26 @@ model DataExportRequest {
 
   @@index([userId])
   @@map("data_export_requests")
+}
+
+model PreviewRequest {
+  id                    String               @id @default(uuid()) @db.Uuid
+  email                 String               @unique
+  role                  PreviewRole
+  name                  String?
+  city                  String?
+  country               String?
+  message               String?
+  consentGranted        Boolean
+  lawfulBasisCandidate  String               @default("consent_candidate_needs_legal_review")
+  status                PreviewRequestStatus @default(new)
+  createdAt             DateTime             @default(now())
+  updatedAt             DateTime             @updatedAt
+  reviewedAt            DateTime?
+  reviewerNote          String?
+
+  @@index([status, createdAt])
+  @@map("preview_requests")
 }
 
 model DeletionRequest {

@@ -15,13 +15,19 @@ Completed in Phase 0:
 - Smoke test files for selected packages and services.
 - Cloudflare Workers Static Assets configuration for the public web shell.
 - Premium public web landing page for LUCID Hub in `apps/web`, using a dark trust-tech hero, app mockups, trust/compliance sections, mini-app/merchant positioning, and architecture strip.
+- Functional preview request slice started:
+  - Landing page CTAs route to `/preview`.
+  - `apps/web/app/preview` submits preview requests to the API through `NEXT_PUBLIC_API_BASE_URL`.
+  - `services/api` exposes validated preview request intake and development-only admin review endpoints.
+  - `apps/admin` shows a pre-production preview request review surface gated by the API-side development switch.
 - Local dependencies installed successfully in the current Node-enabled environment.
 - Phase 1 identity service skeleton added for privacy defaults, consent ledger intake, and GDPR data-rights request intake.
 
 Not completed:
 
 - No migrations have been generated.
-- No production app behavior beyond in-memory service skeletons has been implemented.
+- Preview requests currently use an in-memory API repository; the Prisma model exists but is not wired to a live database repository yet.
+- No production authentication has been implemented.
 
 Known environment note:
 

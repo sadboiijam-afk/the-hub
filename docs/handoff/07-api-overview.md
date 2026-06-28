@@ -1,6 +1,6 @@
 # API Overview
 
-The API service is a NestJS shell with health and early Phase 1 identity intake routes.
+The API service is a NestJS shell with health, early Phase 1 identity intake routes, and preview request intake.
 
 Current package:
 
@@ -10,6 +10,11 @@ Current implemented surface:
 
 - `GET /health` returns a typed health payload.
 - Global validation pipe is configured in `main.ts`.
+- CORS is enabled for local web/admin development origins `http://localhost:3000` and `http://localhost:3001`.
+- `PreviewRequestModule` exposes:
+  - `POST /preview-requests` for public waitlist/preview intake.
+  - `GET /preview-requests` for development-only admin review.
+  - `PATCH /preview-requests/:id/status` for development-only status updates.
 - `IdentityModule` exposes validated HTTP endpoints:
   - `GET /identity/privacy-defaults/:userId`
   - `POST /identity/consents`
@@ -21,10 +26,13 @@ Current implemented surface:
 - Identity routes are decorated with `IdentityAuthBoundaryGuard` and require an explicit `AuthenticatedUserContext`.
 - Identity controllers enforce self-access checks so route/body `userId` values cannot act as authorization by themselves.
 - HTTP-level tests cover missing request users, cross-user denial, invalid UUIDs, and invalid consent lawful bases.
+- Preview request tests cover DTO validation, email normalization, duplicate email rejection, status updates, invalid payload rejection, and the development-only admin guard.
 
 Prototype-only:
 
 - Identity auth is a placeholder boundary only. No production password, session, JWT, OAuth, or device authentication is implemented yet.
+- Preview request admin endpoints are protected only by `PREVIEW_ADMIN_ENABLED=true` outside `NODE_ENV=production`; this is a development-only guard, not production authorization.
+- Preview request storage is currently in-memory at runtime even though a Prisma model now exists.
 - Identity data is not persisted to PostgreSQL yet.
 - The in-memory repository exists only to stabilize service/controller boundaries before schema and migration review.
 - The Prisma repository adapter is covered by fake-client tests only and does not connect to a live database.
@@ -51,5 +59,7 @@ Remaining Phase 1 API work:
 - Dependency injection switch from `InMemoryIdentityRepository` to a real Prisma client provider after migration review.
 - Broader route integration tests with the real Nest application pipeline.
 - Consent ledger, privacy settings, and data export/delete request persistence.
+- Wire preview requests to a reviewed Prisma repository and migration after schema review.
+- Replace the preview request admin development switch with authenticated admin authorization and audit logging.
 
 Do not add chat, payments, mini-app runtime, or moderation workflow endpoints until their planned phases.
